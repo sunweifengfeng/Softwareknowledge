@@ -21,9 +21,11 @@
 1. **李氏代换原则**：子类型必须能够替换掉它的父类型
 2. 一个软件实体如果使用的是一个父类的话，那么一定使用于其他子类，而且察觉不到父类对象和子类对象的区别。即，在软件里，将父类对象替换为其子类，程序行为没有变化。
 
+***
 
 ## 2. 简单工厂方模式
 
+***
 ## 3. 装饰模式
 1. 和建造者模式的区别：建造者模式要求建造的过程必须是稳定的，即顺序什么的都是固定的。但是装饰模式不是，过程不必稳定，有多种方案。
 2. **装饰模式**：动态的给一个对象添加一些额外的职责，就增加功能来说，装饰模式比生成子类更为灵活。（即用装饰模式代替继承）
@@ -118,5 +120,102 @@ void main() {
 这就是装饰模式的嵌套循环
 
 ```java
-
+public abstract class Component {
+    public abstract void operation();
+}
 ```
+```java
+public class ConcreteComponent extends Component {
+
+    @Override
+    public void operation() {
+	System.out.println("具体对象的操作");
+    }
+
+}
+```
+```java
+public abstract class Decorator extends Component {
+    protected Component component;
+
+    public Component getComponent() {
+	return component;
+    }
+
+    public void setComponent(Component component) {
+	this.component = component;
+    }
+
+    @Override
+    public void operation() {
+	if (component != null) {
+	    component.operation();
+	}
+    }
+
+}
+
+class ConcreteDecoratorA extends Decorator {
+    private String addedState;
+
+    @Override
+    public void operation() {
+	// 首先运行原Component的operation()，再执行本类的功能，如addedState，相当于对原Component进行了装饰
+	super.operation();
+	addedState = "A中的new state ";
+	System.out.println(addedState + "具体装饰对象A的操作");
+    }
+}
+
+class ConcreteDecoratorB extends Decorator {
+    @Override
+    public void operation() {
+	super.operation();
+	addedBehavior();
+	System.out.println("具体装饰对象B的操作");
+    }
+
+    public void addedBehavior() {
+	System.out.print("B中的新增行为 ");
+    }
+}
+
+class ConcreteDecoratorC extends Decorator {
+    @Override
+    public void operation() {
+	super.operation();
+	System.out.println("C没有特殊行为 " + "具体装饰对象C的操作");
+    }
+
+}
+```
+```java
+public class DecoratorClient {
+    public static void main(String[] args) {
+	ConcreteComponent concreteComponent = new ConcreteComponent();
+	ConcreteDecoratorA concreteDecoratorA = new ConcreteDecoratorA();
+	ConcreteDecoratorB concreteDecoratorB = new ConcreteDecoratorB();
+	ConcreteDecoratorC concreteDecoratorC = new ConcreteDecoratorC();
+
+	concreteDecoratorA.setComponent(concreteComponent);
+	concreteDecoratorB.setComponent(concreteDecoratorA);
+	concreteDecoratorC.setComponent(concreteDecoratorB);
+	concreteDecoratorC.operation();
+
+    }
+}
+```
+
+3. 如果只有一个ConcreteComponent类而没有抽象的Component类，那么Decorator类可以是ConcreteComponent的一个子类；同样，如果只有一个ConcreteDecorator类，那么就没有必要见一个单独的Decorator类，可以吧二者结合为一个类。
+
+4. **总结装饰模式**
+    装饰模式是为已有功能动态添加更多功能的一种方式。
+	是为了满足一些只在某种特定情况下才有的特殊的行为。
+**优点是：** 
+>把类中的装饰功能从类中剔除，这样可以简化该类。
+>有效的把类的核心职责和装饰功能区分开来。避免了用很多子类进行层层继承
+
+***
+
+## 4. 为别人做嫁衣——代理模式
+
