@@ -219,3 +219,38 @@ public class DecoratorClient {
 
 ## 4. 为别人做嫁衣——代理模式
 
+1. **代理模式**：为其他对象提供一种代理以控制对这个对象的访问。
+2.代理模式结构图 ：
+![结构图](./ProxyPattern.png)
+```java
+public abstract class Subject{
+	public abstract void Request();
+}
+
+public class RealSubject：Subject{
+	@override
+	public void Request(){
+		System.out.printl("真实的请求");
+	}
+}
+
+public class Proxy：Subject{
+	public RealSubject realSubject;
+	@override
+	public void Request(){
+		if(RealSubject==null)
+		{
+			realSubject = new RealSubject();
+		}
+		realSubject.Request();
+	}
+}
+
+public class ProxyClient{
+	Proxy proxy = new Proxy();
+	proxy.request();
+}
+```
+
+### 1. 代理模式应用的场合
+1 远程代理
