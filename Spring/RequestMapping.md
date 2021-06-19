@@ -1,3 +1,22 @@
+## @GetMapping、@PostMapping和@RequestMapping的区别
+今天在使用FreeMarker的时候，在使用注解映射方法的时候还是比较混乱，在使用@GetMapping注解的时候，顺手写成了@RequestMapping ，但是发现还是实现了效果，两者能相互替换，但是换成PostMapping就报：Request method ‘GET’ not supported 的错误！所以我就来研究了一下这三者的区别，发现还确实有联系！
+摘：Spring4.3中引进了｛@GetMapping、@PostMapping、@PutMapping、@DeleteMapping、@PatchMapping｝，来帮助简化常用的HTTP方法的映射，并更好地表达被注解方法的语义。
+
+我们就来谈谈这个三者的区别吧！
+@GetMapping
+用于将HTTP GET请求映射到特定处理程序方法的注释。具体来说，@GetMapping是一个作为快捷方式的组合注释
+@RequestMapping(method = RequestMethod.GET)。
+
+@PostMapping
+用于将HTTP POST请求映射到特定处理程序方法的注释。具体来说，@PostMapping是一个作为快捷方式的组合注释@RequestMapping(method = RequestMethod.POST)。
+
+@RequestMapping:
+一般情况下都是用@RequestMapping（method=RequestMethod.），因为@RequestMapping可以直接替代以上两个注解，但是以上两个注解并不能替代@RequestMapping，@RequestMapping相当于以上两个注解的父类！
+
+类似的组合注解还有：
+@PutMapping、@DeleteMapping、@PatchMapping
+总结下来就是@PostMapping和@GetMapping都可以用@RequestMapping代替，如果读者怕在映射的时候出错，可以统一写@RequestMapping，当然这样写的话也有弊端，笼统的全用@RequestMapping, 不便于其他人对代码的阅读和理解！还是建议区分开来写！养成良好的代码习惯！
+
 ## 一、@RequestMapping 简介
 
 在Spring MVC 中使用 @RequestMapping 来映射请求，也就是通过它来指定控制器可以处理哪些URL请求，相当于Servlet中在web.xml中配
@@ -157,7 +176,7 @@ public class UserController {
 }
 ```
 
-这时，如果浏览器发来的请求不是GET的话，将收到浏览器返回的错误提示，也就是得通过链接的方式而不是表单的方式：
+这时，如果浏览器发来的请求不是GET的话，将收到浏览器返回的错误提示，也就是**得通过链接的方式而不是表单的方式**：
 
 ```html
 <a href="user/login>User Login</a>
@@ -177,7 +196,7 @@ public class UserController {
 }
 ```
 
-这时，必须通过表单的方式发送请求，否则将收到浏览器返回的错误提示
+这时，**必须通过表单的方式发送请求#**#**，否则将收到浏览器返回的错误提示
 ```html
 <form action="user/login" method="post">
     <input type="submit" value="使用Post发送请求"/>
@@ -406,7 +425,7 @@ HTTP Status 405 - JSPs only permit GET POST or HEAD
 （三）自己手动写一个Filter来包装HttpRequest中的getMethod()方法
 
 下面介绍一下第（三）种做法，也就是自己写一个Filter来包装从服务器发回来的HttpRequest请求：
-![request](./request.png)
+![request](./picture/request.png)
 
 大致说一下流程，
 
