@@ -36,3 +36,4 @@ Service层是建立在DAO层之上的，建立了DAO层后才可以建立Service
 
 ## 三、层架构运行流程
 ![三层架构运行流程](./picture/SSM框架流程.png)
+
