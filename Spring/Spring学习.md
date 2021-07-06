@@ -86,4 +86,66 @@ Test 模块：Spring 支持 Junit 和 TestNG 测试框架，而且还额外提�
 
 ---
 
-## 三 
+## 三 第一个Spring程序
+参考：[Idea创建maven spring程序](https://blog.csdn.net/jiahanghacker/article/details/88871207)  
+ ### 1. 创建步骤
+ 
+1. Idea中new project->maven->然后填写next就可以
+![](./picture/idea创建Spring.png)
+2. 在java目录下创建上图的net包，然后穿件HelloWorld.java和MainApp.java.
+在resources中创建Beans.xml
+
+其中：HelloWorld
+```java
+public class HelloWorld {
+    private String message;
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void getMessage() {
+        System.out.println("message : " + message);
+    }
+}
+
+```
+MainApp
+```java
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class MainApp {
+        public static void main(String[] args) {
+            ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+            HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
+            obj.getMessage();
+        }
+}
+```
+关于以上代码，需要注意以下两点：
+创建 ApplicationContext 对象时，我们使用了 ClassPathXmlApplicationContext 类。该类用于加载 Spring 配置文件、创建和初始化所有对象，也就是下面配置文件中提到的 Bean。
+ApplicationContext.getBean() 方法用来获取 Bean，该方法返回值类型为 Object，通过强制类型转换为 HelloWorld 的实例对象，根据该对象调用类中的方法。
+Beans.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="helloWorld" class="net.biancheng.HelloWorld">
+        <property name="message" value="Hello World!" />
+    </bean>
+
+</beans>
+```
+也可以将该配置文件命名为其它有效的名称。需要注意的是，该文件名必须与 MainApp.java 中读取的配置文件名称一致。
+
+Beans.xml 用于给不同的 Bean 分配唯一的 ID，并给相应的 Bean 属性赋值。例如，在以上代码中，我们可以在不影响其它类的情况下，给 message 变量赋值。
+
+
+**问题：对于出现Error:java: 错误: 不支持发行版本 5**
+解决办法：[java 5错误](https://blog.csdn.net/qq_22076345/article/details/82392236)
+将projectStructure和setting中的jdk11换为jdk8  
+---
+
