@@ -52,3 +52,66 @@ Yarn Hadoop源码解析 入门 HDFS MapReduce 生产调优手册
 实时组（实时分析性能调优）
 数据挖掘组（算法组、推荐系统工程师、用户画像工程师）
 报表开发组（JavaEE、前端工程师）
+
+## Day7 Hadoop入门
+1. 概念：Hadoop是什么 发展历史 三大发行版本 优势 组成 大数据技术生态体系 推荐系统案例
+2. 环境准备： 模板虚拟机准备 克隆 安装JDK、Hadoop
+3. Hadoop生产集群搭建 ：本地模式（测试） **完全分布式集群（开发面试的重点）**
+4. 常见错误解决方案
+
+## Day7 Hadoop是什么
+1. Apache基金会开发的分布式系统基础架构
+分布式：一个资料用多台服务器来处理或存储
+
+**2. 主要解决海量数据的存储和海量数据的分析计算**
+
+3. Hadoop生态圈
+
+## Day9 Hadoop发展历史
+三个框架
+HDFS 
+MR
+HBase
+
+## Day10 Hadoop三大发行版本
+Apache 
+Cloudera 
+Hortonworks
+
+## Day11 Hadoop优势
+高可靠性
+高扩展性（动态增加、删除服务器）
+高效性（Hadoop并行工作）
+高容错性：可自动将失败的任务重新分配
+
+## Day12 Hadoop的组成
+资源调度：分配那个服务器、内存
+![](./img/Hadoop组成.png)
+
+## Day13 HDFS概述 Hadoop分布式文件系统
+NameNode：数据存储在什么位置 目录
+DataNode（服务器）：具体存储的数据 根据NameNode去寻找
+2NN：NameNode的备份 防止目录丢失错误
+
+
+## Day14 YARN架构概述
+资源管理器：ResourceManager：
+![](./img/Yarn架构.png)
+
+其中Container容器就是将大的服务器NodeManager虚构出来，当做一个服务器。不需要的时候就将其释放到NodeManger。如阿里云。
+
+ApplicationMaster的任务可以跨节点，跨NodeManger服务器。
+
+Container容器默认1-8G。
+
+## Day15 MapReduce架构概述
+1. MapReduce将计算过程分为两个阶段：MaP和Reduce
+>Map结算并行处理输入数据。
+Reduce阶段对Map结果进行汇总
+
+2. 任务分给每个Hadoop（Map）->每个Hadoop计算结果->返回结果（reduce）
+
+## Day16 HDFS、Yarn、MapReduce三者之间的关系
+![](./img/HDFS_YARN_MAPreduce.png)
+
+## Day17 大数据技术生态体系
