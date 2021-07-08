@@ -1,4 +1,37 @@
-转自：[Spring](http://c.biancheng.net/spring/what-is-spring.html)  
+转自：[Spring](http://c.biancheng.net/spring/what-is-spring.html) 
+## springmvc和springboot的区别
+Spring 框架就像一个家族，有众多衍生产品例如 boot、security、jpa等等。但他们的基础都是Spring 的 ioc和 aop ioc 提供了依赖注入的容器 aop ，解决了面向横切面的编程，然后在此两者的基础上实现了其他延伸产品的高级功能。Spring MVC是基于 Servlet 的一个 MVC 框架 主要解决 WEB 开发的问题，因为 Spring 的配置非常复杂，各种XML、 JavaConfig、hin处理起来比较繁琐。于是为了简化开发者的使用，从而创造性地推出了Spring boot，约定优于配置，简化了spring的配置流程。
+
+说得更简便一些：Spring 最初利用“工厂模式”（DI）和“代理模式”（AOP）解耦应用组件。大家觉得挺好用，于是按照这种模式搞了一个 MVC框架（一些用Spring 解耦的组件），用开发 web 应用（ SpringMVC ）。然后有发现每次开发都写很多样板代码，为了简化工作流程，于是开发出了一些“懒人整合包”（starter），这套就是 Spring Boot。
+
+ 
+
+### 1.Spring MVC的功能
+
+Spring MVC提供了一种轻度耦合的方式来开发web应用。
+
+Spring MVC是Spring的一个模块，式一个web框架。通过Dispatcher Servlet, ModelAndView 和 View Resolver，开发web应用变得很容易。解决的问题领域是网站应用程序或者服务开发——URL路由、Session、模板引擎、静态Web资源等等。
+
+ 
+
+### 2. Spring Boot的功能
+
+Spring Boot实现了自动配置，降低了项目搭建的复杂度。
+
+众所周知Spring框架需要进行大量的配置，Spring Boot引入自动配置的概念，让项目设置变得很容易。Spring Boot本身并不提供Spring框架的核心特性以及扩展功能，只是用于快速、敏捷地开发新一代基于Spring框架的应用程序。也就是说，它并不是用来替代Spring的解决方案，而是和Spring框架紧密结合用于提升Spring开发者体验的工具。同时它集成了大量常用的第三方库配置(例如Jackson, JDBC, Mongo, Redis, Mail等等)，Spring Boot应用中这些第三方库几乎可以零配置的开箱即用(out-of-the-box)，大部分的Spring Boot应用都只需要非常少量的配置代码，开发者能够更加专注于业务逻辑。
+
+Spring Boot只是承载者，辅助你简化项目搭建过程的。如果承载的是WEB项目，使用Spring MVC作为MVC框架，那么工作流程和你上面描述的是完全一样的，因为这部分工作是Spring MVC做的而不是Spring Boot。
+
+对使用者来说，换用Spring Boot以后，项目初始化方法变了，配置文件变了，另外就是不需要单独安装Tomcat这类容器服务器了，maven打出jar包直接跑起来就是个网站，但你最核心的业务逻辑实现与业务流程实现没有任何变化。
+
+### 3. 所以，用最简练的语言概括就是：
+
+Spring 是一个“引擎”；
+
+Spring MVC 是基于Spring的一个 MVC 框架 ；
+
+Spring Boot 是基于Spring4的条件注册的一套快速开发整合包。
+
 ## 一 Spring 是什么
 
 ### 1. Spring 全家桶
@@ -147,5 +180,71 @@ Beans.xml 用于给不同的 Bean 分配唯一的 ID，并给相应的 Bean 属�
 **问题：对于出现Error:java: 错误: 不支持发行版本 5**
 解决办法：[java 5错误](https://blog.csdn.net/qq_22076345/article/details/82392236)
 将projectStructure和setting中的jdk11换为jdk8  
+
 ---
 
+
+## 四 IOC容器
+**IoC 容器是 Spring 的核心，也可以称为 Spring 容器。Spring 通过 IoC 容器来管理对象的实例化和初始化，以及对象从创建到销毁的整个生命周期。**
+
+**Spring 中使用的对象都由 IoC 容器管理，不需要我们手动使用 new 运算符创建对象。由 IoC 容器管理的对象称为 Spring Bean，Spring Bean 就是 Java 对象，和使用 new 运算符创建的对象没有区别。**
+
+Spring 通过读取 XML 或 Java 注解中的信息来获取哪些对象需要实例化。
+
+Spring 提供 2 种不同类型的 IoC 容器，即 `BeanFactory` 和 `ApplicationContext `容器。
+
+### 1. BeanFactory 容器
+BeanFactory 是最简单的容器，由 org.springframework.beans.factory.BeanFactory 接口定义，采用懒加载（lazy-load），所以容器启动比较快。BeanFactory 提供了容器最基本的功能。
+
+为了能够兼容 Spring 集成的第三方框架（如 BeanFactoryAware、InitializingBean、DisposableBean），所以目前仍然保留了该接口。
+
+简单来说，**BeanFactory 就是一个管理 Bean 的工厂，它主要负责初始化各种 Bean，并调用它们的生命周期方法。**
+
+BeanFactory 接口有多个实现类，最常见的是 org.springframework.beans.factory.xml.XmlBeanFactory。使用 BeanFactory 需要创建 XmlBeanFactory 类的实例，通过 XmlBeanFactory 类的构造函数来传递 Resource 对象。如下所示。
+```java
+Resource resource = new ClassPathResource("applicationContext.xml"); 
+BeanFactory factory = new XmlBeanFactory(resource); 
+```
+### 2.ApplicationContext 容器
+`ApplicationContext` 继承了 `BeanFactory` 接口，由 org.springframework.context.ApplicationContext 接口定义，对象在启动容器时加载。ApplicationContext 在 BeanFactory 的基础上增加了很多企业级功能，例如 AOP、国际化、事件支持等。
+
+ApplicationContext 接口有两个常用的实现类，具体如下。
+**1）ClassPathXmlApplicationContext**
+该类从类路径 ClassPath 中寻找指定的 XML 配置文件，并完成 ApplicationContext 的实例化工作，具体如下所示。
+```java
+ApplicationContext applicationContext = new ClassPathXmlApplicationContext(String configLocation);
+```
+在上述代码中，configLocation 参数用于指定 Spring 配置文件的名称和位置，如 Beans.xml。
+**2）FileSystemXmlApplicationContext**
+该类从指定的文件系统路径中寻找指定的 XML 配置文件，并完成 ApplicationContext 的实例化工作，具体如下所示。
+```java
+ApplicationContext applicationContext = new FileSystemXmlApplicationContext(String configLocation);
+```
+它与 ClassPathXmlApplicationContext 的区别是：在读取 Spring 的配置文件时，FileSystemXmlApplicationContext 不会从类路径中读取配置文件，而是通过参数指定配置文件的位置。即 FileSystemXmlApplicationContext 可以获取类路径之外的资源，如“F:/workspaces/Beans.xml”。
+
+通常在 Java 项目中，会采用 ClassPathXmlApplicationContext 类实例化 ApplicationContext 容器的方式，而在 Web 项目中，ApplicationContext 容器的实例化工作会交由 Web 服务器完成。Web 服务器实例化 ApplicationContext 容器通常使用基于 ContextLoaderListener 实现的方式，它只需要在 web.xml 中添加如下代码：
+```xml
+<!--指定Spring配置文件的位置，有多个配置文件时，以逗号分隔-->
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <!--spring将加载spring目录下的applicationContext.xml文件-->
+    <param-value>
+        classpath:spring/applicationContext.xml
+    </param-value>
+</context-param>
+<!--指定以ContextLoaderListener方式启动Spring容器-->
+<listener>
+    <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+</listener>
+```
+需要注意的是，BeanFactory 和 ApplicationContext 都是通过 XML 配置文件加载 Bean 的。
+
+**二者的主要区别**在于，如果 Bean 的某一个属性没有注入，使用 BeanFacotry 加载后，第一次调用 getBean() 方法时会抛出异常，而 ApplicationContext 则会在初始化时自检，这样有利于检查所依赖的属性是否注入。
+
+因此，在实际开发中，通常都选择使用 ApplicationContext，只有在系统资源较少时，才考虑使用 BeanFactory。本教程中使用的是 ApplicationContext 容器。
+
+---
+
+## 五 Spring Bean的定义
