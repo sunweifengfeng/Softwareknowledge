@@ -42,3 +42,7 @@ OODBMS 面向对象数据库管理系统,将所有实体都看着对象,并将�
 **NoSQL：** JSON，JSONB，XML，HStore 原生支持，至 NoSQL 数据库的外部数据包装器。
 **数据仓库：** 能平滑迁移至同属 PostgreSQL 生态的 GreenPlum，DeepGreen，HAWK 等，使用 FDW 进行 ETL。
 
+## Day2 安装PostgreSql
+### 1 windows
+[菜鸟教程安装](https://www.runoob.com/postgresql/windows-install-postgresql.html) 
+[安装问题解决](https://blog.csdn.net/yuboo999/article/details/80460712) 
