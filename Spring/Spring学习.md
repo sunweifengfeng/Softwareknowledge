@@ -248,3 +248,14 @@ ApplicationContext applicationContext = new FileSystemXmlApplicationContext(Stri
 ---
 
 ## 五 Spring Bean的定义
+### 1 Bean的概念
+由 Spring IoC 容器管理的对象称为 `Bean`，Bean 根据 Spring 配置文件中的信息创建。
+
+可以把 Spring IoC 容器看作是一个大工厂，Bean 相当于工厂的产品，如果希望这个大工厂生产和管理 Bean，则需要告诉容器需要哪些 Bean，以及需要哪种方式装配 Bean。
+
+### 2 Spring 配置文件的两种格式
+Spring 配置文件支持两种格式，即 XML 文件格式和 Properties 文件格式。
+Properties 配置文件主要以 key-value 键值对的形式存在，只能赋值，不能进行其他操作，适用于简单的属性配置。
+XML 配置文件是树形结构，相对于 Properties 文件来说更加灵活。XML 配置文件结构清晰，但是内容比较繁琐，适用于大型复杂的项目。
+
+通常情况下，Spring 的配置文件使用 XML 格式。XML 配置文件的根元素是 <beans>，该元素包含了多个子元素 <bean>。每一个 <bean> 元素都定义了一个 Bean，并描述了该 Bean 如何被装配到 Spring 容器中。
