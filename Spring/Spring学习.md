@@ -123,6 +123,69 @@ Test 模块：Spring 支持 Junit 和 TestNG 测试框架，而且还额外提�
 参考：[Idea创建maven spring程序](https://blog.csdn.net/jiahanghacker/article/details/88871207)  
  ### 1. 创建步骤
  
+ 首先Pom.xml引入相关依赖
+ ```xml
+ <?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.spring.demo</groupId>
+    <artifactId>springTest</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!--测试相关-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <!--Spring核心基础依赖-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+        <!--日志相关-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+```
+
 1. Idea中new project->maven->然后填写next就可以
 ![](./picture/idea创建Spring.png)
 2. 在java目录下创建上图的net包，然后穿件HelloWorld.java和MainApp.java.
@@ -258,4 +321,393 @@ Spring 配置文件支持两种格式，即 XML 文件格式和 Properties 文�
 Properties 配置文件主要以 key-value 键值对的形式存在，只能赋值，不能进行其他操作，适用于简单的属性配置。
 XML 配置文件是树形结构，相对于 Properties 文件来说更加灵活。XML 配置文件结构清晰，但是内容比较繁琐，适用于大型复杂的项目。
 
-通常情况下，Spring 的配置文件使用 XML 格式。XML 配置文件的根元素是 <beans>，该元素包含了多个子元素 <bean>。每一个 <bean> 元素都定义了一个 Bean，并描述了该 Bean 如何被装配到 Spring 容器中。
+通常情况下，Spring 的配置文件使用 XML 格式。XML 配置文件的根元素是 `beans`，该元素包含了多个子元素 `bean`。每一个`bean` 元素都定义了一个 Bean，并描述了该 Bean 如何被装配到 Spring 容器中。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="helloWorld" class="net.biancheng.HelloWorld">
+        <property name="message" value="Hello World!" />
+    </bean>
+</beans>
+```
+上述代码中，使用 id 属性定义了 Bean，并使用 class 属性指定了 Bean 对应的类。
+bean元素中可以包含很多属性，其常用属性如下表所示。
+![bean属性描述](./picture/bean的属性描述.png)
+
+**1. name:** 就是类中的字段的名称 value是给字段进行初始化 就像：
+```java
+public class HelloWorld {
+    private String message;
+```
+xml文件中就是给该message字段进行初始化
+
+---
+
+## 六 Spring Bean作用域
+### 1.  概述
+在配置文件中，除了可以定义 Bean 的属性值和相互之间的依赖关系，还可以声明 Bean 的作用域。
+### 2. 例子
+例如，如果每次获取 Bean 时，都需要一个 Bean 实例，那么应该将 Bean 的 scope 属性定义为 prototype，如果 Spring 需要每次都返回一个相同的 Bean 实例，则应将 Bean 的 scope 属性定义为 singleton。
+### 3.作用域的种类
+Spring 容器在初始化一个 Bean 实例时，同时会指定该实例的作用域。Spring 5 支持以下 6 种作用域。
+**1）singleton**
+默认值，单例模式，表示在 Spring 容器中只有一个 Bean 实例，Bean 以单例的方式存在。
+**2）prototype**
+原型模式，表示每次通过 Spring 容器获取 Bean 时，容器都会创建一个 Bean 实例。
+**3）request**
+每次 HTTP 请求，容器都会创建一个 Bean 实例。该作用域只在当前 HTTP Request 内有效。
+**4）session**
+同一个 HTTP Session 共享一个 Bean 实例，不同的 Session 使用不同的 Bean 实例。该作用域仅在当前 HTTP Session 内有效。
+5）application
+同一个 Web 应用共享一个 Bean 实例，该作用域在当前 ServletContext 内有效。
+
+类似于 singleton，不同的是，singleton 表示每个 IoC 容器中仅有一个 Bean 实例，而同一个 Web 应用中可能会有多个 IoC 容器，但一个 Web 应用只会有一个 ServletContext，也可以说 application 才是 Web 应用中货真价实的单例模式。
+**6）websocket**
+websocket 的作用域是 WebSocket ，即在整个 WebSocket 中有效。
+注意：Spring 5 版本之前还支持 global Session，该值表示在一个全局的 HTTP Session 中，容器会返回该 Bean 的同一个实例。一般用于 Portlet 应用环境。Spring 5.2.0 版本中已经将该值移除了。
+
+**注意**
+request、session、application、websocket 和  global Session 作用域只能在 Web 环境下使用，如果使用 ClassPathXmlApplicationContext 加载这些作用域中的任意一个的 Bean，就会抛出以下异常。
+>java.lang.IllegalStateException: No Scope registered for scope name 'xxx'
+
+
+### 4.下面我们详细讲解常用的两个作用域：singleton 和 prototype
+**1. singleton**
+singleton 是 Spring 容器默认的作用域。当 Bean 的作用域为 singleton 时，Spring 容器中只会存在一个共享的 Bean 实例。该 Bean 实例将存储在高速缓存中，并且所有对 Bean 的请求，只要 id 与该 Bean 定义相匹配，都会返回该缓存对象。
+
+通常情况下，这种单例模式对于**无会话状态的 Bean（如 DAO 层、Service 层）来说**，是最理想的选择。
+
+在 Spring 配置文件中，可以使用 <bean> 元素的 scope 属性，将 Bean 的作用域定义成 singleton，其配置方式如下所示：
+```xml
+<bean id="..." class="..." scope="singleton"/>
+```
+**例 1**
+下面使用 Eclipse IDE 演示如何将 Bean 的作用域指定为 singleton，步骤如下：
+1. 创建 SpringDemo 项目，并在 src 目录下创建 net.biancheng 包。
+2. 添加相应的 jar 包，可以参考《第一个Spring程序》一节。
+3. 在 net.biancheng 包下创建 HelloWorld 和 MainApp 类。
+4. 在 src 目录下创建 Spring 配置文件 Beans.xml。
+5. 运行 SpringDemo 项目。
+   
+**HelloWorld 类代码如下。**
+```java
+package net.biancheng;
+
+public class HelloWorld {
+    private String message;
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void getMessage() {
+        System.out.println("message : " + message);
+    }
+}
+```
+**MainApp 类如下。**
+```java
+package net.biancheng;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+
+        HelloWorld objA = (HelloWorld) context.getBean("helloWorld");
+        objA.setMessage("对象A");
+        objA.getMessage();
+
+        HelloWorld objB = (HelloWorld) context.getBean("helloWorld");
+        objB.getMessage();
+    }
+}
+```
+Beans.xml 文件内容如下。
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="helloWorld" class="net.biancheng.HelloWorld" scope="singleton"/>
+      
+</beans>
+```
+
+运行结果如下。
+>message : 对象A
+message : 对象A
+
+从运行结果可以看出，两次输出内容相同，这说明 Spring 容器只创建了一个 HelloWorld 类的实例。由于 Spring 容器默认作用域是 singleton，所以如果省略 scope 属性，其输出结果也会是一个实例。
+
+
+**2. prototype**
+对于 prototype 作用域的 Bean，Spring 容器会在每次请求该 Bean 时都创建一个新的 Bean 实例。prototype 作用域适用于需要保持会话状态的 Bean（如 Struts2 的 Action 类）。
+
+在 Spring 配置文件中，可以使用 `<bean> `元素的 scope 属性，将 Bean 的作用域定义成 prototype，其配置方式如下所示：
+```xml
+<bean id="..." class="..." scope="prototype"/>
+```
+**例 2**
+在例 1 的基础上，修改配置文件 Beans.xml，内容如下。
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="helloWorld" class="net.biancheng.HelloWorld" scope="prototype"/>
+      
+</beans>
+```
+
+运行结果如下。
+>message : 对象A
+message : null
+
+从运行结果可以看出，两次输出的内容并不相同，这说明在 prototype 作用域下，Spring 容器创建了两个不同的 HelloWorld 实例。
+
+---
+
+## 七 Bean的生命周期
+
+在传统的 Java 应用中，Bean 的生命周期很简单，使用关键字 new 实例化 Bean，当不需要该 Bean 时，由 Java 自动进行垃圾回收。
+
+Spring 中 Bean 的生命周期较复杂，可以表示为：Bean 的定义 -> Bean 的初始化 -> Bean 的使用 -> Bean 的销毁。
+
+Spring 根据 Bean 的作用域来选择管理方式。对于 singleton 作用域的 Bean，Spring 能够精确地知道该 Bean 何时被创建，何时初始化完成，以及何时被销毁；而对于 prototype 作用域的 Bean，Spring 只负责创建，当容器创建了 Bean 的实例后，Bean 的实例就交给客户端代码管理，Spring 容器将不再跟踪其生命周期。
+
+
+
+## 十 依赖注入
+### 1 依赖注入的概念
+1. Spring 依赖注入（Dependency Injection，DI）和控制反转含义相同，它们是从两个角度描述的同一个概念。
+
+**1.1 控制反转** ：（主语是java ：交由Spring管理）
+当某个 Java 实例需要另一个 Java 实例时，传统的方法是由调用者创建被调用者的实例（例如，使用 new 关键字获得被调用者实例），而使用 Spring 框架后，被调用者的实例不再由调用者创建，而是由 Spring 容器创建，这称为控制反转。
+（**控制反转**是将new创建对象的权利，交由Spring去管理）
+
+**1.2 依赖注入** ：（主语是Spring： 将Spring获得的被调用者实例注入调用者中）
+Spring 容器在创建被调用者的实例时，会自动将调用者需要的对象实例注入给调用者，调用者通过 Spring 容器获得被调用者实例，这称为依赖注入。
+
+### 2 依赖注入的两种实现方式
+分别是 **setter 注入**（又称设值注入）和**构造函数**注入。具体介绍如下。
+
+### 3 构造函数注入
+**1. 构造函数注入**
+指 IoC 容器使用构造函数注入被依赖的实例。可以通过调用**带参数**的构造函数实现依赖注入（是指调用者、被调用者，均具有带有参数的构造方法），每个参数代表一个依赖。
+
+在配置文件中，主要使用 <constructor-arg> 标签定义构造方法的参数，使用其 value 属性（或子元素）设置该参数的值。
+
+**1.1 例子：**
+在 `<constructor-arg>` 标签中，包含 ref、value、type、index 等属性。
+>`value` 属性用于注入基本数据类型以及字符串类型的值；
+`ref `属性用于注入已经定义好的 Bean；
+`type `属性用来指定对应的构造函数(为string时，是有参的构造函数)；
+`index `当构造函数有多个参数时，可以使用 index 属性指定参数的位置，index 属性值从 0 开始。
+
+**下面使用 IDEA 演示通过构造函数注入依赖项，步骤如下：**
+**1)** 创建 maven SpringDemo 项目，并在 java 目录下创建 net.biancheng 包。
+**2)** 添加相应的 jar 包，可以参考《第一个Spring程序》一节。
+**3)** 在 net.biancheng 包下创建 Person、Man 和 MainApp 类。
+**4)** 在 resources 目录下创建 Spring 配置文件 Beans.xml。
+**5)** 运行 SpringDemo 项目。
+
+Person 类代码如下。
+```java
+package net.biancheng;
+
+public class Person {
+    private Man man;
+
+    public Person(Man man) {
+        System.out.println("在Person的构造函数内");
+        this.man = man;
+    }
+
+    public void man() {
+        man.show();
+    }
+}
+```
+Man类：
+```java
+package net.biancheng;
+
+public class Man {
+    private String name;
+    private int age;
+
+    public Man() {
+        System.out.println("在man的构造函数内");
+    }
+
+    public Man(String name, int age) {
+        System.out.println("在man的有参构造函数内");
+        this.name = name;
+        this.age = age;
+    }
+
+    public void show() {
+        System.out.println("名称：" + name + "\n年龄：" + age);
+    }
+}
+```
+**Beans.xml 配置文件如下。**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="man" class="net.biancheng.Man">
+        <constructor-arg value="bianchengbang" />
+        <constructor-arg value="12" type="int" />
+    </bean>
+
+    <bean id="person" class="net.biancheng.Person">
+        <constructor-arg ref="man">
+    </bean>
+
+</beans>
+```
+**MainApp 类代码如下。**
+```java
+package net.biancheng;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+        Person person = (Person) context.getBean("person");
+        person.man();
+    }
+}
+```
+
+运行结果如下。
+>在man的有参构造函数内
+在Person的构造函数内
+名称：bianchengbang
+年龄：12
+
+**构造注入的实现过程：**
+1. 首先根据Beans.xml创建ApplicationContext 的IOC容器
+2. 通过getBean方法传入bean的id，创建java实例。
+3. 此时在创建java的person实例时，去Beans.xml中，由于配置了`<constructir-arg>`,因此调用Person的带有参数的构造方法，且根据Person的构造方法，调用Man带有参数的构造方法
+4. 在man带有参数的构造方法中，对name和age赋值，完成依赖注入。
+
+### 4 setter注入
+**1. setter 注入**
+指 IoC 容器使用 setter 方法注入被依赖的实例。通过调用**无参构造器**（被调用者的无参构造器）或无参 static 工厂方法实例化 Bean 后，调用该 Bean 的 setter 方法，即可实现基于 setter 的 DI。
+
+在 Spring 实例化 Bean 的过程中，首先会调用默认的构造方法实例化 Bean 对象，然后通过 Java 的反射机制调用 setXxx() 方法进行属性的注入。
+**因此，setter 注入要求 Bean 的对应类必须满足以下两点要求。**
+1. 必须提供一个默认的无参构造方法。
+2. 必须为需要注入的属性提供对应的 setter 方法。
+
+使用 setter 注入时，在 Spring 配置文件中，需要使用 `<bean>` 元素的子元素 `<property>` 为每个属性注入值。
+
+**2. 下面使用 `<property> `标签实现 setter 注入。**
+
+在 `<property> `标签中，包含 name、ref、value 等属性。name 用于指定参数名称；value 属性用于注入基本数据类型以及字符串类型的值；ref 属性用于注入已经定义好的 Bean。
+
+**例 2**在例 1 的基础上修改 Man 类的内容，代码如下。
+```java
+package net.biancheng;
+
+public class Man {
+    private String name;
+    private int age;
+
+    public Man() {
+        System.out.println("在man的构造函数内");
+    }
+
+    public Man(String name, int age) {
+        System.out.println("在man的有参构造函数内");
+        this.name = name;
+        this.age = age;
+    }
+
+    public void show() {
+        System.out.println("名称：" + name + "\n年龄：" + age);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+Person类中：
+```java
+public class Person {
+    private Man man;
+
+    public Person() {
+    }
+    
+    public void man() {
+        man.show();
+    }
+
+    public void setMan(Man man) {
+        System.out.println("在SetMan的方法内");
+        this.man = man;
+    }
+}
+```
+
+Beans.xml中：
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="person" class="net.biancheng.Person">
+        <property name="man" ref="man" />
+    </bean>
+
+    <bean id="man" class="net.biancheng.Man">
+        <property name="name" value="bianchengbang" />
+        <property name="age" value="12" />
+    </bean>
+
+</beans>
+```
+运行结果如下。
+>在man的构造函数内
+在setMan方法内
+名称：bianchengbang
+年龄：12
+
+其中`<property>`的作用是将参数传递到Person或Man类的set方法中去。
+而构造注入中：`<constructor-arg>`是将参数传递进Person或Man类的构造方法中去。
+
